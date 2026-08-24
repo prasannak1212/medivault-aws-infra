@@ -1,0 +1,42 @@
+# MediVault AWS Infrastructure
+
+## 1. Project Overview
+
+MediVault is a healthcare application that allows users to store medical scan images.
+
+This project focuses on designing and building the cloud infrastructure required to run MediVault using AWS services.
+
+The infrastructure will be developed progressively as different AWS services are learned.
+
+---
+
+## 2. Initial Objective
+
+The initial version of MediVault will consist of:
+
+- One EC2 instance hosting the application
+- One S3 bucket for storing scan images
+- A VPC with separate Production and Management network segments
+- IAM users, groups and roles for access control
+- CloudWatch monitoring for infrastructure and storage
+
+---
+
+## 3. Initial Architecture
+
+                         AWS
+                          |
+                         VPC
+                          |
+              +-----------+-----------+
+              |                       |
+       Production Network       Management Network
+              |                       |
+             EC2                  Admin Access
+              |
+              |
+         S3 API Access
+              |
+              v
+          S3 Bucket
+        Scan Images
