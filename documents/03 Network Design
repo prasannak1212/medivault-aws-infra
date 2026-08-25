@@ -1,4 +1,4 @@
-Creating VPC - Isolated network inside AWS
+## 1. Creating VPC - Isolated network inside AWS
 
                  AWS
                   |
@@ -10,7 +10,7 @@ Creating VPC - Isolated network inside AWS
  Production              Management
  10.0.1.0/24             10.0.2.0/24
 
-CIDR PLAN
+## 2. CIDR PLAN
 VPC
 10.0.0.0/16
 
@@ -29,9 +29,77 @@ We'll divide it into subnets:
       └── 10.0.2.0/24 → Management
 
 
-STEPS TO CREATE VPC IN AWS:
+## 3. STEPS TO CREATE VPC IN AWS:
 
 Step - 1: Open AWS VPC & click create VPC
 Step - 2: Choose "VPC Only" option
 Step - 3: Enter the VPC details & Click create VPC
 (Name Tag - MediVault-VPC, IPv4 CIDR - 10.0.0.0/16, IPv6 - leave it disabled by default, Tenancy - Default, VPC Encryption Control - None)
+
+### Current Implementation Status
+
+- MediVault VPC: Created
+- VPC CIDR: 10.0.0.0/16
+
+## 4. Creating Availability Zones & Subnets
+
+Region:
+ap-south-1
+
+Availability Zone:
+ap-south-1a
+
+VPC:
+10.0.0.0/16
+
+                  ap-south-1
+                      |
+                 ap-south-1a
+                      |
+             MediVault-VPC
+              10.0.0.0/16
+                      |
+             ┌────────┴────────┐
+             ↓                 ↓
+       Production          Management
+       10.0.1.0/24         10.0.2.0/24
+
+## 5. Create Production Subnet
+
+STEPS TO CREATE SUBNET
+
+Step -1: Go to VPC → Subnets → Create subnet
+Step -2: Select VPC, Enter Subnet name, Choose Availability Zone, Enter IPv4 subnet CIDR
+
+## 6. Create Management Subnet
+
+Name:
+MediVault-Management-Subnet
+
+VPC:
+MediVault-VPC
+
+AZ:
+ap-south-1a
+
+CIDR:
+10.0.2.0/24
+
+## 7. Final VPC & Subnet
+MediVault-VPC
+10.0.0.0/16
+       |
+       └── ap-south-1a
+             |
+             ├── MediVault-Production-Subnet
+             │   10.0.1.0/24
+             │
+             └── MediVault-Management-Subnet
+                 10.0.2.0/24
+
+- Production Subnet: Created
+  - CIDR: 10.0.1.0/24
+  - AZ: ap-south-1a
+- Management Subnet: Created
+  - CIDR: 10.0.2.0/24
+  - AZ: ap-south-1a
