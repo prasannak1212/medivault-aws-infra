@@ -1,0 +1,170 @@
+EC2 Design Summary
+                    EC2
+                     |
+        ┌────────────┼────────────┐
+        ↓            ↓            ↓
+       AMI          EBS        IAM Role
+     Ubuntu       20-30GB       |
+        |                       ↓
+        |                       S3
+        |
+   MediVault App
+        |
+        ↓
+Production Subnet
+10.0.1.0/24
+        |
+   Private IP
+
+
+EC2 Architecture
+                         AWS
+                          |
+                     MediVault VPC
+                      10.0.0.0/16
+                          |
+                  Production Subnet
+                   10.0.1.0/24
+                          |
+                         EC2
+                    Ubuntu Server
+                          |
+             ┌────────────┴────────────┐
+             ↓                         ↓
+            EBS                    IAM Role
+             |                         |
+       OS/Application                  ↓
+                                  S3 Bucket
+                                  Scan Images
+
+## 1. EC2 Purpose
+EC2 server will run the MediVault Application
+EC2
+ |
+ ├── Linux OS
+ ├── Python
+ ├── FastAPI
+ └── MediVault application
+
+## 2. AMI — Operating System
+
+ AMI
+Amazon Linux 2023
+        ↓
+Architecture
+ARM64
+        ↓
+EC2
+t4g.small
+
+## 3. Instance Type
+
+t4g.small
+├── 2 vCPU
+├── 2 GiB RAM
+└── ARM64
+
+## 4. EBS Root Volume
+
+EC2 needs persistent block storage for the operating system
+20 GiB
+gp3
+
+EC2
+ |
+ └── Root EBS
+      |
+      ├── Amazon Linux
+      ├── Python
+      ├── FastAPI
+      └── Application code
+
+## 5. Network
+
+VPC:
+MediVault-VPC
+Subnet:
+MediVault-Production-Subnet
+CIDR:
+10.0.1.0/24
+
+AWS will assign a private IP automatically.
+Enable Public IPv4
+
+## 6. Security Group
+
+Create security group
+MediVault-EC2-SG
+TCP 8000
+
+## 7. IAM Role
+
+## Final EC2 Specifications
+
+Setting	Choice
+Name	MediVault-Application
+OS	Amazon Linux 2023
+Architecture	ARM64
+Instance	t4g.small
+vCPU	2
+RAM	2 GiB
+VPC	MediVault-VPC
+Subnet	Production
+Private IP	AWS assigned
+Public IP	Enabled
+Root disk	20 GiB gp3
+Security Group	MediVault-EC2-SG
+Application port	Initially TCP 8000
+Management	SSM
+AWS permissions	IAM Role
+Image storage	S3
+
+## 8. Steps to create EC2 Instance
+
+AWS Console → EC2 → Instances → Launch instance
+MediVault-Application
+
+Under Application and OS Images, select:
+Amazon Linux 2023 AMI
+
+t4g.small
+
+Click Create new key pair if you don't already have one specifically for this project.
+RSA
+.pem
+
+Network settings
+MediVault-VPC
+MediVault-Production-Subnet
+auto assign public IP - Enable
+
+Security Group
+MediVault-EC2-SG
+Security group for MediVault application server
+Type: SSH
+Port: 22
+Source: My IP
+
+Storage
+Root volume
+Size: 8 GiB
+Volume type: gp3
+
+## Final  EC2 Design
+
+AWS
+│
+└── MediVault VPC
+    │
+    ├── Production Subnet
+    │   10.0.1.0/24
+    │   │
+    │   └── MediVault EC2 ✅ RUNNING
+    │       ├── Private IP: 10.0.1.x
+    │       ├── Public IP: AWS assigned
+    │       ├── Amazon Linux 2023 ARM64
+    │       ├── t4g.small
+    │       └── 8 GiB gp3
+    │
+    └── Management Subnet
+        10.0.2.0/24

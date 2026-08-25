@@ -200,3 +200,19 @@ MediVault-VPC
 │       └── Management Route Table
 │
 └── Internet Gateway
+
+NOTE: For basics and to avoid complexity, we are Just adding public route to production;
+Go to route table - Edit routes - addd route - 0.0.0.0/0 - Select internet gateway and choose medivault IGW
+
+                     Internet
+                         |
+                         ↓
+                    MediVault-IGW
+                         |
+                         ↓
+                 Production RT
+                    /       \
+                   /         \
+              Internet        S3
+                 ↓             ↓
+                EC2        S3 Endpoint
