@@ -103,3 +103,100 @@ MediVault-VPC
 - Management Subnet: Created
   - CIDR: 10.0.2.0/24
   - AZ: ap-south-1a
+
+## 8. Creating Route Tables
+Every VPC Has a Main Route Table
+
+STEPS TO CREATE ROUTE TABLE:
+Step - 1: VPC → Route Tables → Create route table
+Enter Name - MediVault-Production-RT; Select VPC; Click Create
+MediVault-Management-RT
+Step - 2: Associate route tables with subnets
+VPC → Route Tables → MediVault-Production-RT
+Subnet associations → Edit subnet associations
+
+                  MediVault-VPC
+                   10.0.0.0/16
+                         |
+            ┌────────────┴────────────┐
+            ↓                         ↓
+      Production                 Management
+      10.0.1.0/24               10.0.2.0/24
+            |                         |
+            ↓                         ↓
+     Production-RT              Management-RT
+
+## 9. Creating Internet Gateway
+An Internet Gateway (IGW) is the component that provides a VPC a path to/from the Internet.
+Creating an Internet Gateway does not automatically make a subnet public.
+We need
+Internet Gateway
+        +
+Route: 0.0.0.0/0 → Internet Gateway
+
+STEPS TO CREATE INTERNET GATEWAY
+Step - 1: VPC → Internet Gateways
+MediVault-IGW
+Step - 2: Attach it to medivault vpc
+
+### FINAL VPC DESIGN
+MediVault-VPC
+10.0.0.0/16
+│
+├── Production Subnet
+│   10.0.1.0/24
+│   │
+│   └── Production Route Table
+│
+├── Management Subnet
+│   10.0.2.0/24
+│   │
+│   └── Management Route Table
+│
+└── Internet Gateway
+    MediVault-IGW
+
+## 10. Creating S3 Gateway VPC Endpoint
+
+STEPS TO CREATE VPC ENDPOINT
+Step - 1: VPC → Endpoints → Create endpoint
+MediVault-S3-Endpoint
+Step - 2: Select AWS services - S3 with type Gateway
+Step - 3: Choose VPC - MediVault-VPC
+Step - 4: Configure Route Table
+MediVault-Production-RT
+Step - 5: Choose endpoint policy (MediVault-Production-RT)
+
+### Final VPC Design without production IGW
+
+                         MediVault VPC
+                         10.0.0.0/16
+                               |
+              ┌────────────────┴────────────────┐
+              ↓                                 ↓
+       Production Subnet                  Management Subnet
+        10.0.1.0/24                         10.0.2.0/24
+              |                                 |
+      Production-RT                     Management-RT
+              |
+              ↓
+       S3 Gateway Endpoint
+              |
+              ↓
+             S3
+
+### FINAL VPC DESIGN
+
+MediVault-VPC
+10.0.0.0/16
+│
+├── Production Subnet
+│   └── 10.0.1.0/24
+│       └── Production Route Table
+│           └── S3 Gateway Endpoint
+│
+├── Management Subnet
+│   └── 10.0.2.0/24
+│       └── Management Route Table
+│
+└── Internet Gateway
