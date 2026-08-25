@@ -30,7 +30,7 @@ The infrastructure will be deployed inside a dedicated VPC.
         Scan Images
 
 
-# AWS Components
+## 3. AWS Components
 
 VPC
 
@@ -74,7 +74,7 @@ CloudWatch
 
 Provides monitoring and metrics for the infrastructure.
 
-# Application Data Flow
+## 4. Application Data Flow
 
 User
  |
@@ -90,7 +90,7 @@ S3 Bucket
  |
  +-- Scan Images
 
- # Management Data Flow
+## 5. Management Data Flow
 
  Administrator
  |
@@ -100,7 +100,7 @@ Management Access
  v
 EC2
 
-# Storage Design
+## 6. Storage Design
 
 The initial architecture uses two primary storage services:
 
@@ -119,7 +119,7 @@ Object-based application data
 
 This separates compute/application storage from large-scale object storage.
 
-# Security Principles
+## 7. Security Principles
 
 The architecture will follow:
 
