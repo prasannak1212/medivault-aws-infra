@@ -40,3 +40,86 @@ The initial version of MediVault will consist of:
               v
           S3 Bucket
         Scan Images
+
+## 4. Initial AWS Services
+
+| Service    | Purpose                        |
+| ---------- | ------------------------------ |
+| VPC        | Network isolation              |
+| EC2        | Run MediVault application      |
+| EBS        | EC2 root/application storage   |
+| S3         | Store medical scan images      |
+| IAM        | Identity and access management |
+| CloudWatch | Monitoring and metrics         |
+
+## 5. Initial Network Plan
+
+VPC
+
+CIDR:
+
+10.0.0.0/16
+
+Production Network
+
+CIDR:
+
+10.0.1.0/24
+
+Purpose:
+
+Host the MediVault application.
+
+Management Network
+
+CIDR:
+
+10.0.2.0/24
+
+Purpose:
+
+Administrative access to infrastructure.
+
+## 6. Storage Architecture
+
+The initial storage architecture separates application infrastructure from user scan data.
+
+EC2
+
+Used for:
+
+Operating system
+MediVault application
+Application-related local data
+
+EC2 will use EBS for its block storage.
+
+S3
+
+Used for:
+
+Medical scan images
+Object-based application data
+
+S3 will not have a customer-assigned IP address like an EC2 instance.
+
+The application will access S3 through AWS APIs.
+
+## 7. Security Goals
+
+The infrastructure should follow these principles:
+
+Least-privilege IAM permissions
+S3 bucket should not be publicly accessible
+S3 data should be encrypted
+Administrative access should be restricted
+Application access to S3 should use an IAM role rather than hard-coded credentials
+
+## 8. Monitoring Goals
+
+CloudWatch will be used to monitor:
+
+EC2 health
+EC2 resource utilization
+S3 activity/metrics where applicable
+Infrastructure health

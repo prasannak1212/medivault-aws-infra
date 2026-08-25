@@ -1,0 +1,14 @@
+# GIT & GITHUB NOTES
+Create directory as per project requirement
+git init
+git status
+create .gitignore file
+git add .
+git commit -m "Commit Message"
+Create Github Repo
+git remote add origin <YOUR-GITHUB-REPOSITORY-URL>
+git remote -v
+git config --global --get init.defaultBranch ---- Check if default branch is main; If not change to main
+git branch -M main ---- Optional; If default branch is other than main use this command
+git push -u origin main
+

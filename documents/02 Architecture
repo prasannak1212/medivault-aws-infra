@@ -1,0 +1,132 @@
+# MediVault AWS - Architecture
+
+## 1. Architecture Overview
+
+The initial MediVault infrastructure will run on AWS and consist of an EC2-based application server with S3 used for medical scan image storage.
+
+The infrastructure will be deployed inside a dedicated VPC.
+
+---
+
+## 2. Initial Architecture
+
+                         AWS
+                          |
+                         VPC
+                      10.0.0.0/16
+                          |
+              +-----------+-----------+
+              |                       |
+       Production Subnet       Management Subnet
+        10.0.1.0/24              10.0.2.0/24
+              |                       |
+             EC2                 Admin Access
+              |
+              |
+       S3 Gateway Endpoint
+              |
+              v
+          S3 Bucket
+        Scan Images
+
+
+# AWS Components
+
+VPC
+
+CIDR: 10.0.0.0/16
+
+Provides network isolation for MediVault infrastructure.
+
+Production Subnet
+
+CIDR: 10.0.1.0/24
+
+Hosts the MediVault EC2 application server.
+
+Management Subnet
+
+CIDR: 10.0.2.0/24
+
+Reserved for infrastructure management and administrative access.
+
+EC2
+
+Hosts the MediVault application.
+
+The EC2 instance will use EBS as its root storage.
+
+S3
+
+Stores medical scan images as objects.
+
+S3 is an AWS managed object-storage service and does not receive a customer-assigned private IP address like an EC2 instance.
+
+S3 Gateway VPC Endpoint
+
+Provides private connectivity from the VPC to S3 without requiring a NAT Gateway.
+
+IAM
+
+Controls administrative and application access to AWS resources.
+
+CloudWatch
+
+Provides monitoring and metrics for the infrastructure.
+
+# Application Data Flow
+
+User
+ |
+ v
+MediVault Application
+ |
+ v
+EC2
+ |
+ | S3 API
+ v
+S3 Bucket
+ |
+ +-- Scan Images
+
+ # Management Data Flow
+
+ Administrator
+ |
+ v
+Management Access
+ |
+ v
+EC2
+
+# Storage Design
+
+The initial architecture uses two primary storage services:
+
+EBS
+
+Used by EC2 for:
+Operating system
+Application installation
+Local application data where required
+
+S3
+
+Used for:
+Medical scan images
+Object-based application data
+
+This separates compute/application storage from large-scale object storage.
+
+# Security Principles
+
+The architecture will follow:
+
+Least-privilege IAM
+Private S3 bucket
+S3 Block Public Access
+Encryption at rest
+Encryption in transit
+IAM Role for EC2-to-S3 access
+Restricted administrative access
