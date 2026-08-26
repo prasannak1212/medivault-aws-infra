@@ -1,31 +1,27 @@
 # Python
 __pycache__/
 *.py[cod]
-.venv/
-venv/
 
-# Environment / secrets
+# Virtual environment
+venv/
+.venv/
+
+# Environment variables / secrets
 .env
 .env.*
-!.env.example
 
-# VS Code
-.vscode/
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Terraform
-.terraform/
-*.tfstate
-*.tfstate.*
-*.tfvars
-!*.tfvars.example
-
-# Logs
-*.log
-
-# Keys
+# AWS credentials / keys
 *.pem
 *.ppk
+.aws/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

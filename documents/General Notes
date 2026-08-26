@@ -16,3 +16,10 @@ git push -u origin main
 chmod 400 xxx.pem
 ssh -i xxx.pem ec2-user@13.x.x.x
 
+# Creating & activating Python virtual environment
+python -m venv venv
+venv\Scripts\activate
+pip install fastapi uvicorn
+pip install python-multipart
+pip install boto3
+pip install streamlit requests
