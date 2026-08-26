@@ -12,3 +12,7 @@ git config --global --get init.defaultBranch ---- Check if default branch is mai
 git branch -M main ---- Optional; If default branch is other than main use this command
 git push -u origin main
 
+# BASH CLI COMMANDS
+chmod 400 xxx.pem
+ssh -i xxx.pem ec2-user@13.x.x.x
+

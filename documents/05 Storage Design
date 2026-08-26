@@ -1,0 +1,92 @@
+Our bucket will store MediVault scan images.
+
+MediVault S3 Bucket
+│
+├── scans/
+│   ├── patient-001/
+│   │   ├── scan-001.jpg
+│   │   └── scan-002.jpg
+│   │
+│   └── patient-002/
+│       └── scan-001.png
+
+S3 bucket names must be globally unique, not just unique inside your AWS account.
+
+## 1. Creating S3 Bucket
+medivault-scan-images-bucket01
+Asia Pacific (Mumbai); ap-south-1
+Choose: Bucket owner enforced; This disables S3 ACLs.
+Block Public Access - Block all public access — Enabled
+Bucket Versioning - Disable
+Encryption - Select SSE-S3
+Object Lifecycle - Don't configure
+
+Bucket Properties Summary:
+| Setting          | Choice                |
+| ---------------- | --------------------- |
+| Region           | `ap-south-1`          |
+| Object ownership | Bucket owner enforced |
+| Public access    | **Blocked**           |
+| Versioning       | Disabled initially    |
+| Encryption       | SSE-S3                |
+| Lifecycle        | None initially        |
+| Purpose          | MediVault scan images |
+
+## 2. IAM - connect EC2 to S3 securely
+
+EC2
+ ↓
+IAM Role
+ ↓
+S3
+
+MediVault-EC2-Role
+        |
+        └── S3 permissions
+             |
+             └── medivault-scan-images-bucket01
+
+Step - 1: Create the IAM role
+AWS Console → IAM → Roles → Create role
+Trusted entity, Select: AWS service
+For the use case, select: EC2
+Trust relationship created
+Role name: MediVault-EC2-S3-Role
+Description: IAM role allowing the MediVault EC2 instance to access the MediVault S3 scan image bucket.
+
+Create IAM inline Policy (For S3 Access)
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ListMediVaultBucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": "arn:aws:s3:::medivault-scan-images-bucket01"
+    },
+    {
+      "Sid": "ManageScanImages",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::medivault-scan-images-bucket01/scans/*"
+    }
+  ]
+}
+Policy Name: MediVault-Scan-Images-Access
+
+Bucket-level:
+s3:ListBucket
+Object-level:
+s3:GetObject
+s3:PutObject
+
+Step - 2: Attach the role to EC2
+EC2 → Instances
+Select: MediVault-Application
+Choose: Actions → Security → Modify IAM role, MediVault-EC2-S3-Role
